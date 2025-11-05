@@ -1,7 +1,7 @@
 // Servicio para comunicación con la API del backend
 class ApiService {
     constructor() {
-        this.baseURL = 'http://localhost:5001';
+        this.baseURL = 'https://camila-ansiedad-frontend.vercel.app';
         this.token = localStorage.getItem('camila_token');
         this.anonymousId = localStorage.getItem('camila_anonymous_id') || this.generateAnonymousId();
         this.isAuthenticated = !!this.token;
