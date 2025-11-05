@@ -1,7 +1,7 @@
 // Servicio para comunicación con la API del backend
 class ApiService {
     constructor() {
-        this.baseURL = 'https://camila-ansiedad-backend-production.up.railway.app';
+        this.baseURL = 'https://camila-ansiedad-api.garcessebastian.com';
         this.token = localStorage.getItem('camila_token');
         this.anonymousId = localStorage.getItem('camila_anonymous_id') || this.generateAnonymousId();
         this.isAuthenticated = !!this.token;
