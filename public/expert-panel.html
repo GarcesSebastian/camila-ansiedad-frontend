@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Experto - Camila</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/expert.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="expert-container">
+        <!-- Header -->
+        <header class="expert-header">
+            <div class="header-left">
+                <h1>🧠 Panel de Experto</h1>
+                <div class="expert-info">
+                    <span id="expertName">Cargando...</span>
+                    <span id="expertInstitution">Institución</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="logoutBtn" class="btn-logout">🚪 Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="expert-main">
+            <!-- Sidebar de Navegación -->
+            <nav class="expert-sidebar">
+                <div class="nav-section">
+                    <h3>Análisis</h3>
+                    <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                        📊 Dashboard
+                    </a>
+                    <a href="#patients" class="nav-item" data-section="patients">
+                        👥 Pacientes
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Gestión</h3>
+                    <a href="#university-management" class="nav-item" data-section="university-management">
+                        🏛️ Gestión Universitaria
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Configuración</h3>
+                    <a href="#keywords-management" class="nav-item" data-section="keywords-management">
+                        🔤 Palabras Clave
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Mi Área</h3>
+                    <div id="assignedAreas" class="assigned-areas">
+                        <!-- Las áreas asignadas se cargarán aquí -->
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Contenido Principal -->
+            <div class="expert-content">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="section active">
+                    <div class="section-header">
+                        <h2>Dashboard de Seguimiento</h2>
+                        <div class="date-filter">
+                            <select id="timeRange">
+                                <option value="7">Últimos 7 días</option>
+                                <option value="30" selected>Últimos 30 días</option>
+                                <option value="90">Últimos 3 meses</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+            <h3 id="totalPatients">0</h3>
+            <p>Total de Pacientes</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+            <h3 id="activePatients">0</h3>
+            <p>Pacientes Activos</p>
+        </div>
+    </div>
+    <div class="stat-card risk-high">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-info">
+            <h3 id="highRiskPatients">0</h3>
+            <p>Alto Riesgo</p>
+        </div>
+    </div>
+    <div class="stat-card risk-medium">
+        <div class="stat-icon">🔸</div>
+        <div class="stat-info">
+            <h3 id="mediumRiskPatients">0</h3>
+            <p>Riesgo Moderado</p>
+        </div>
+    </div>
+</div>
+
+                    <div class="charts-grid">
+    <div class="chart-card">
+        <h3>📊 Pacientes por Facultad</h3>
+        <div id="facultyDistributionChart" class="chart-container">
+            <div class="loading-chart">Cargando gráfica...</div>
+        </div>
+    </div>
+    <div class="chart-card">
+        <h3>🎓 Pacientes por Programa</h3>
+        <div id="programDistributionChart" class="chart-container">
+            <div class="loading-chart">Cargando gráfica...</div>
+        </div>
+    </div>
+    <div class="chart-card">
+        <h3>😔 Niveles de Ansiedad</h3>
+        <div id="anxietyLevelChart" class="chart-container">
+            <div class="loading-chart">Cargando gráfica...</div>
+        </div>
+    </div>
+</div>
+
+                    <div class="recent-activity">
+                        <h3>Actividad Reciente</h3>
+                        <div id="recentActivity" class="activity-list">
+                            <!-- Actividad reciente -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Patients Section -->
+                <section id="patients-section" class="section">
+    <div class="section-header">
+        <h2>Gestión de Pacientes</h2>
+        <div class="patient-actions">
+            <button id="createPatientBtn" class="btn-primary">+ Nuevo Paciente</button>
+        </div>
+    </div>
+
+    <!-- Filtros Avanzados -->
+    <div class="filters-section">
+        <div id="advancedFilters">
+            <!-- Los filtros se cargarán dinámicamente aquí -->
+        </div>
+    </div>
+
+    <!-- Tabla de Pacientes -->
+    <div class="patients-table-section">
+        <div id="patientsTableContainer">
+            <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Cargando pacientes...</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+                <!-- University Management Section -->
+                <section id="university-management-section" class="section">
+                    <div class="section-header">
+                        <h2>Gestión Universitaria</h2>
+                        <div class="management-actions">
+                            <button id="createProgramBtn" class="btn-primary">+ Nuevo Programa</button>
+                            <button id="createFacultyBtn" class="btn-primary">+ Nueva Facultad</button>
+                        </div>
+                    </div>
+
+                    <!-- Pestañas para Programas y Facultades -->
+                    <div class="university-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="programs">📚 Programas</button>
+                            <button class="tab-btn" data-tab="faculties">🏛️ Facultades</button>
+                        </div>
+
+                        <div class="tab-content">
+                            <!-- Tab de Programas -->
+                            <div id="programs-tab" class="tab-pane active">
+                                <div class="management-header">
+                                    <h3>Programas Académicos</h3>
+                                    <div class="search-filter">
+                                        <input type="text" id="programSearch" placeholder="🔍 Buscar programa...">
+                                    </div>
+                                </div>
+                                
+                                <div class="items-grid" id="programsGrid">
+                                    <!-- Los programas se cargarán aquí -->
+                                </div>
+                            </div>
+
+                            <!-- Tab de Facultades -->
+                            <div id="faculties-tab" class="tab-pane">
+                                <div class="management-header">
+                                    <h3>Facultades</h3>
+                                    <div class="search-filter">
+                                        <input type="text" id="facultySearch" placeholder="🔍 Buscar facultad...">
+                                    </div>
+                                </div>
+                                
+                                <div class="items-grid" id="facultiesGrid">
+                                    <!-- Las facultades se cargarán aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Keywords Management Section -->
+                <!-- Keywords Management Section -->
+<section id="keywords-management-section" class="section">
+    <div class="section-header">
+        <h2>Gestión de Palabras Clave para Ansiedad</h2>
+        <button id="addKeywordBtn" class="btn-primary">+ Nueva Palabra Clave</button>
+    </div>
+
+    <div class="keywords-controls">
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-symptom="all">Todas</button>
+            <button class="filter-tab" data-symptom="ansiedad">Ansiedad</button>
+            <button class="filter-tab" data-symptom="depresion">Depresión</button>
+            <button class="filter-tab" data-symptom="insomnio">Insomnio</button>
+            <button class="filter-tab" data-symptom="estres">Estrés</button>
+            <button class="filter-tab" data-symptom="panico">Pánico</button>
+        </div>
+        
+        <div class="search-filter">
+            <input type="text" id="keywordSearch" placeholder="🔍 Buscar palabra clave...">
+        </div>
+    </div>
+
+    <div class="keywords-table-container">
+        <div class="table-controls">
+            <div class="table-stats">
+                <div class="stat">
+                    <span class="stat-label">Total:</span>
+                    <span class="stat-value" id="totalKeywords">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Alto Riesgo:</span>
+                    <span class="stat-value" id="highWeightKeywords">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Medio:</span>
+                    <span class="stat-value" id="mediumWeightKeywords">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Bajo:</span>
+                    <span class="stat-value" id="lowWeightKeywords">0</span>
+                </div>
+            </div>
+            <div class="table-filters">
+                <select id="sortKeywords">
+                    <option value="weight-desc">Peso: Alto a Bajo</option>
+                    <option value="weight-asc">Peso: Bajo a Alto</option>
+                    <option value="keyword-asc">Palabra: A-Z</option>
+                    <option value="keyword-desc">Palabra: Z-A</option>
+                    <option value="date-desc">Más Recientes</option>
+                    <option value="date-asc">Más Antiguas</option>
+                </select>
+            </div>
+        </div>
+
+        <table class="keywords-table">
+            <thead>
+                <tr>
+                    <th width="30%">Palabra Clave</th>
+                    <th width="20%">Síntoma</th>
+                    <th width="15%">Peso</th>
+                    <th width="20%">Fecha Creación</th>
+                    <th width="15%">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="keywordsTableBody">
+                <!-- Las palabras clave se cargarán aquí dinámicamente -->
+            </tbody>
+        </table>
+
+        <div id="keywordsEmptyState" class="empty-table-state" style="display: none;">
+            <div class="empty-table-icon">🔤</div>
+            <h3>No hay palabras clave configuradas</h3>
+            <p>Comienza agregando palabras clave para mejorar la detección de ansiedad</p>
+            <button class="btn-primary" onclick="expertPanel.showKeywordModal()">
+                + Agregar Primera Palabra Clave
+            </button>
+        </div>
+    </div>
+</section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Crear Paciente -->
+    <div id="createPatientModal" class="modal hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Crear Nuevo Paciente</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="createPatientForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre Completo *</label>
+                        <input type="text" id="patientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="patientEmail" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contraseña *</label>
+                        <input type="password" id="patientPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Edad</label>
+                        <input type="number" id="patientAge" min="13" max="120">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Ubicación Institucional</h4>
+                    <div id="institutionalFormContainer">
+                        <!-- El formulario se cargará dinámicamente aquí -->
+                        <div class="loading-text">Cargando formulario según tu institución...</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>Información Médica (Opcional)</h4>
+                    <div class="form-group">
+                        <label>Historial Médico</label>
+                        <textarea id="patientMedicalHistory" rows="3" 
+                                  placeholder="Antecedentes médicos relevantes..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Contacto de Emergencia</label>
+                        <input type="text" id="patientEmergencyContact" 
+                               placeholder="Nombre y teléfono de contacto">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Crear Paciente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Ver Detalles de Paciente -->
+    <div id="patientDetailModal" class="modal hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Detalles del Paciente</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="patientDetailContent">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Crear/Editar Programa -->
+    <div id="programModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="programModalTitle">Nuevo Programa</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="programForm">
+                <input type="hidden" id="programId">
+                <div class="form-group">
+                    <label>Nombre del Programa *</label>
+                    <input type="text" id="programName" required placeholder="Ej: Ingeniería de Sistemas">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="programDescription" rows="4" placeholder="Descripción del programa..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="programSubmitBtn">Crear Programa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Crear/Editar Facultad -->
+    <div id="facultyModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="facultyModalTitle">Nueva Facultad</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="facultyForm">
+                <input type="hidden" id="facultyId">
+                <div class="form-group">
+                    <label>Nombre de la Facultad *</label>
+                    <input type="text" id="facultyName" required placeholder="Ej: Facultad de Ingeniería">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="facultyDescription" rows="4" placeholder="Descripción de la facultad..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="facultySubmitBtn">Crear Facultad</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación para Eliminar -->
+    <div id="confirmDeleteModal" class="modal hidden">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>Confirmar Eliminación</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmDeleteMessage">¿Estás seguro de que quieres eliminar este elemento?</p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                <button type="button" class="btn-danger" id="confirmDeleteBtn">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar/Editar Palabra Clave -->
+    <div id="keywordModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="keywordModalTitle">Nueva Palabra Clave</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="keywordForm">
+                <input type="hidden" id="keywordId">
+                <div class="form-group">
+                    <label>Síntoma *</label>
+                    <select id="keywordSymptom" required>
+                        <option value="">Seleccionar síntoma...</option>
+                        <option value="ansiedad">Ansiedad</option>
+                        <option value="depresion">Depresión</option>
+                        <option value="insomnio">Insomnio</option>
+                        <option value="estres">Estrés</option>
+                        <option value="panico">Ataque de Pánico</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Palabra Clave *</label>
+                    <input type="text" id="keywordText" required 
+                           placeholder="Ej: abrumado, confundido, suicidio...">
+                </div>
+                <div class="form-group">
+                    <label>Peso (1-5) *</label>
+                    <div class="weight-selector">
+                        <div class="weight-options">
+                            <label class="weight-option">
+                                <input type="radio" name="weight" value="1" required>
+                                <span class="weight-badge">1 - Leve</span>
+                            </label>
+                            <label class="weight-option">
+                                <input type="radio" name="weight" value="2">
+                                <span class="weight-badge">2 - Moderado</span>
+                            </label>
+                            <label class="weight-option">
+                                <input type="radio" name="weight" value="3" checked>
+                                <span class="weight-badge">3 - Significativo</span>
+                            </label>
+                            <label class="weight-option">
+                                <input type="radio" name="weight" value="4">
+                                <span class="weight-badge">4 - Grave</span>
+                            </label>
+                            <label class="weight-option">
+                                <input type="radio" name="weight" value="5">
+                                <span class="weight-badge">5 - Crítico</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="keywordSubmitBtn">
+                        Guardar Palabra Clave
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/expert-panel.js"></script>
+</body>
+</html>

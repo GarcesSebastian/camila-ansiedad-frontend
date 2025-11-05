@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Institucional - Camila</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/institutional-admin.css">
+</head>
+<body>
+    <div class="institutional-container">
+        <!-- Header -->
+        <header class="institutional-header">
+            <div class="header-left">
+                <h1>🏛️ Panel Institucional</h1>
+                <div class="institution-info">
+                    <span id="institutionName">Cargando institución...</span>
+                    <span id="adminName">Administrador</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="refreshBtn" class="btn-secondary">🔄 Actualizar</button>
+                <button id="settingsBtn" class="btn-secondary">⚙️ Configuración</button>
+                <button id="logoutBtn" class="btn-logout">🚪 Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="institutional-main">
+            <!-- Sidebar -->
+            <nav class="institutional-sidebar">
+                <div class="nav-section">
+                    <h3>Dashboard</h3>
+                    <a href="#overview" class="nav-item active" data-section="overview">
+                        📊 Resumen General
+                    </a>
+                    <a href="#structure" class="nav-item" data-section="structure">
+                        🏗️ Estructura
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Gestión de Usuarios</h3>
+                    <a href="#students" class="nav-item" data-section="students">
+                        👥 Estudiantes
+                    </a>
+                    <a href="#experts" class="nav-item" data-section="experts">
+                        👨‍⚕️ Expertos
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Análisis y Reportes</h3>
+                    <a href="#analytics" class="nav-item" data-section="analytics">
+                        📈 Analytics
+                    </a>
+                    <a href="#reports" class="nav-item" data-section="reports">
+                        📋 Reportes
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Configuración</h3>
+                    <a href="#institution-settings" class="nav-item" data-section="institution-settings">
+                        ⚙️ Institución
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="institutional-content">
+                <!-- Overview Section -->
+                <section id="overview-section" class="section active">
+                    <div class="section-header">
+                        <h2>Resumen Institucional</h2>
+                        <div class="time-filter">
+                            <select id="overviewTimeRange">
+                                <option value="7">Últimos 7 días</option>
+                                <option value="30" selected>Últimos 30 días</option>
+                                <option value="90">Últimos 3 meses</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overview-stats">
+                        <div class="stat-row">
+                            <div class="stat-card large">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-info">
+                                    <h3 id="totalStudents">0</h3>
+                                    <p>Estudiantes Activos</p>
+                                    <div class="stat-trend" id="studentsTrend">
+                                        <span class="trend-icon">→</span>
+                                        <span class="trend-text">Estable</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card large">
+                                <div class="stat-icon">💬</div>
+                                <div class="stat-info">
+                                    <h3 id="totalConversations">0</h3>
+                                    <p>Conversaciones Totales</p>
+                                    <div class="stat-trend" id="conversationsTrend">
+                                        <span class="trend-icon">→</span>
+                                        <span class="trend-text">Estable</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="risk-stats">
+                            <div class="risk-card high-risk">
+                                <div class="risk-header">
+                                    <div class="risk-icon">⚠️</div>
+                                    <div class="risk-info">
+                                        <h4 id="highRiskCount">0</h4>
+                                        <p>Alto Riesgo</p>
+                                    </div>
+                                </div>
+                                <div class="risk-percentage" id="highRiskPercentage">0%</div>
+                            </div>
+                            
+                            <div class="risk-card medium-risk">
+                                <div class="risk-header">
+                                    <div class="risk-icon">🔸</div>
+                                    <div class="risk-info">
+                                        <h4 id="mediumRiskCount">0</h4>
+                                        <p>Riesgo Moderado</p>
+                                    </div>
+                                </div>
+                                <div class="risk-percentage" id="mediumRiskPercentage">0%</div>
+                            </div>
+                            
+                            <div class="risk-card low-risk">
+                                <div class="risk-header">
+                                    <div class="risk-icon">✅</div>
+                                    <div class="risk-info">
+                                        <h4 id="lowRiskCount">0</h4>
+                                        <p>Riesgo Leve</p>
+                                    </div>
+                                </div>
+                                <div class="risk-percentage" id="lowRiskPercentage">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-charts">
+                        <div class="chart-row">
+                            <div class="chart-card">
+                                <h3>Distribución por Programa</h3>
+                                <div id="programDistributionChart" class="chart-container">
+                                    <!-- Gráfico por programa -->
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Actividad por Facultad</h3>
+                                <div id="facultyActivityChart" class="chart-container">
+                                    <!-- Gráfico por facultad -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-alerts">
+                        <h3>Alertas Recientes</h3>
+                        <div id="recentAlerts" class="alerts-list">
+                            <!-- Alertas se cargarán aquí -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure Section -->
+                <section id="structure-section" class="section">
+                    <div class="section-header">
+                        <h2>Estructura Institucional</h2>
+                        <div class="structure-actions">
+                            <button id="addProgramBtn" class="btn-primary">+ Programa</button>
+                            <button id="addFacultyBtn" class="btn-primary">+ Facultad</button>
+                            <button id="addCareerBtn" class="btn-primary">+ Carrera</button>
+                        </div>
+                    </div>
+
+                    <div class="structure-container">
+                        <div class="structure-tree" id="structureTree">
+                            <!-- Árbol de estructura se cargará aquí -->
+                        </div>
+                        
+                        <div class="structure-details" id="structureDetails">
+                            <div class="details-placeholder">
+                                <div class="placeholder-icon">🏛️</div>
+                                <h3>Selecciona un elemento</h3>
+                                <p>Haz clic en cualquier programa, facultad o carrera para ver sus detalles</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Students Section -->
+                <section id="students-section" class="section">
+                    <div class="section-header">
+                        <h2>Gestión de Estudiantes</h2>
+                        <div class="student-filters">
+                            <input type="text" id="studentSearch" placeholder="🔍 Buscar estudiante...">
+                            <select id="studentProgramFilter">
+                                <option value="">Todos los programas</option>
+                            </select>
+                            <select id="studentFacultyFilter">
+                                <option value="">Todas las facultades</option>
+                            </select>
+                            <select id="studentRiskFilter">
+                                <option value="">Todos los riesgos</option>
+                                <option value="high">Alto Riesgo</option>
+                                <option value="medium">Riesgo Moderado</option>
+                                <option value="low">Riesgo Leve</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="students-table-container">
+                        <table class="students-table" id="studentsTable">
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Programa</th>
+                                    <th>Facultad</th>
+                                    <th>Carrera</th>
+                                    <th>Conversaciones</th>
+                                    <th>Nivel de Riesgo</th>
+                                    <th>Última Actividad</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <!-- Datos de estudiantes se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-pagination" id="studentsPagination">
+                        <!-- Paginación -->
+                    </div>
+                </section>
+
+                <!-- Experts Section -->
+                <section id="experts-section" class="section">
+                    <div class="section-header">
+                        <h2>Gestión de Expertos</h2>
+                        <button id="addExpertBtn" class="btn-primary">+ Agregar Experto</button>
+                    </div>
+
+                    <div class="experts-grid" id="expertsGrid">
+                        <!-- Expertos se cargarán aquí -->
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analytics-section" class="section">
+                    <div class="section-header">
+                        <h2>Analíticas Institucionales</h2>
+                        <div class="analytics-controls">
+                            <select id="analyticsPeriod">
+                                <option value="7">Última semana</option>
+                                <option value="30" selected>Último mes</option>
+                                <option value="90">Último trimestre</option>
+                                <option value="365">Último año</option>
+                            </select>
+                            <select id="analyticsView">
+                                <option value="general">Vista General</option>
+                                <option value="programs">Por Programas</option>
+                                <option value="faculties">Por Facultades</option>
+                                <option value="careers">Por Carreras</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="analytics-dashboard">
+                        <div class="analytics-row">
+                            <div class="analytics-card">
+                                <h3>Tendencia de Uso</h3>
+                                <div id="usageTrendChart" class="chart-container">
+                                    <!-- Gráfico de tendencia -->
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <h3>Horarios de Actividad</h3>
+                                <div id="activityHoursChart" class="chart-container">
+                                    <!-- Gráfico de horarios -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="analytics-row">
+                            <div class="analytics-card full-width">
+                                <h3>Distribución Geográfica</h3>
+                                <div id="geographicDistribution" class="chart-container large">
+                                    <!-- Mapa de distribución -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports-section" class="section">
+                    <div class="section-header">
+                        <h2>Reportes Institucionales</h2>
+                        <div class="report-actions">
+                            <button id="generateReportBtn" class="btn-primary">📊 Generar Reporte</button>
+                            <button id="exportReportBtn" class="btn-secondary">📥 Exportar PDF</button>
+                        </div>
+                    </div>
+
+                    <div class="reports-config">
+                        <div class="config-section">
+                            <h3>Configuración del Reporte</h3>
+                            <div class="config-grid">
+                                <div class="config-group">
+                                    <label>Período</label>
+                                    <div class="date-range">
+                                        <input type="date" id="reportStartDate">
+                                        <span>a</span>
+                                        <input type="date" id="reportEndDate">
+                                    </div>
+                                </div>
+                                <div class="config-group">
+                                    <label>Tipo de Reporte</label>
+                                    <select id="reportType">
+                                        <option value="comprehensive">Comprehensivo</option>
+                                        <option value="risk">Análisis de Riesgo</option>
+                                        <option value="usage">Uso de la Plataforma</option>
+                                        <option value="comparative">Comparativo</option>
+                                    </select>
+                                </div>
+                                <div class="config-group">
+                                    <label>Segmentación</label>
+                                    <select id="reportSegmentation">
+                                        <option value="none">Sin segmentación</option>
+                                        <option value="program">Por Programa</option>
+                                        <option value="faculty">Por Facultad</option>
+                                        <option value="career">Por Carrera</option>
+                                        <option value="semester">Por Semestre</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="config-section">
+                            <h3>Métricas a Incluir</h3>
+                            <div class="metrics-checkboxes">
+                                <label><input type="checkbox" name="metrics" value="usage" checked> Métricas de Uso</label>
+                                <label><input type="checkbox" name="metrics" value="risk" checked> Niveles de Riesgo</label>
+                                <label><input type="checkbox" name="metrics" value="demographics"> Datos Demográficos</label>
+                                <label><input type="checkbox" name="metrics" value="trends"> Tendencias</label>
+                                <label><input type="checkbox" name="metrics" value="comparisons"> Comparaciones</label>
+                                <label><input type="checkbox" name="metrics" value="recommendations"> Recomendaciones</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="reportPreview" class="report-preview">
+                        <!-- Vista previa del reporte -->
+                    </div>
+                </section>
+
+                <!-- Institution Settings Section -->
+                <section id="institution-settings-section" class="section">
+                    <div class="section-header">
+                        <h2>Configuración de la Institución</h2>
+                        <button id="saveSettingsBtn" class="btn-primary">💾 Guardar Cambios</button>
+                    </div>
+
+                    <div class="settings-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="general">General</button>
+                            <button class="tab-btn" data-tab="integration">Integración</button>
+                            <button class="tab-btn" data-tab="notifications">Notificaciones</button>
+                            <button class="tab-btn" data-tab="security">Seguridad</button>
+                        </div>
+
+                        <div class="tab-content">
+                            <!-- General Tab -->
+                            <div id="general-tab" class="tab-pane active">
+                                <div class="settings-form">
+                                    <div class="form-section">
+                                        <h3>Información Básica</h3>
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label>Nombre de la Institución *</label>
+                                                <input type="text" id="institutionNameSetting" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Email de Contacto *</label>
+                                                <input type="email" id="institutionEmailSetting" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Teléfono</label>
+                                                <input type="tel" id="institutionPhoneSetting">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Código de Institución *</label>
+                                                <input type="text" id="institutionCodeSetting" required>
+                                                <small>Los estudiantes usarán este código para registrarse</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h3>Configuración de Límites</h3>
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label>Límite de Estudiantes</label>
+                                                <input type="number" id="studentLimit" min="1" max="10000">
+                                                <small>Número máximo de estudiantes permitidos</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Límite de Expertos</label>
+                                                <input type="number" id="expertLimit" min="1" max="100">
+                                                <small>Número máximo de expertos psicológicos</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Integration Tab -->
+                            <div id="integration-tab" class="tab-pane">
+                                <div class="settings-form">
+                                    <div class="form-section">
+                                        <h3>Integración con Sistemas Existentes</h3>
+                                        <div class="integration-options">
+                                            <div class="integration-card">
+                                                <h4>🔄 Sistema de Gestión Académica</h4>
+                                                <p>Conecta con tu plataforma académica existente</p>
+                                                <button class="btn-secondary">Configurar</button>
+                                            </div>
+                                            <div class="integration-card">
+                                                <h4>📧 Sistema de Correo Institucional</h4>
+                                                <p>Integración con el servicio de email</p>
+                                                <button class="btn-secondary">Configurar</button>
+                                            </div>
+                                            <div class="integration-card">
+                                                <h4>🔐 Sistema de Autenticación</h4>
+                                                <p>SSO con las credenciales institucionales</p>
+                                                <button class="btn-secondary">Configurar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notifications Tab -->
+                            <div id="notifications-tab" class="tab-pane">
+                                <div class="settings-form">
+                                    <div class="form-section">
+                                        <h3>Configuración de Alertas</h3>
+                                        <div class="notification-settings">
+                                            <div class="notification-item">
+                                                <label>
+                                                    <input type="checkbox" id="emailAlerts" checked>
+                                                    Alertas por Email
+                                                </label>
+                                                <small>Recibir notificaciones por correo electrónico</small>
+                                            </div>
+                                            <div class="notification-item">
+                                                <label>
+                                                    <input type="checkbox" id="highRiskAlerts" checked>
+                                                    Alertas de Alto Riesgo
+                                                </label>
+                                                <small>Notificaciones inmediatas para casos de alto riesgo</small>
+                                            </div>
+                                            <div class="notification-item">
+                                                <label>
+                                                    <input type="checkbox" id="weeklyReports" checked>
+                                                    Reportes Semanales
+                                                </label>
+                                                <small>Resumen semanal de actividad y métricas</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h3>Umbrales de Alerta</h3>
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label>Umbral de Riesgo Alto</label>
+                                                <input type="number" id="highRiskThreshold" min="1" max="10" value="7">
+                                                <small>Puntaje mínimo para considerar alto riesgo</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Umbral de Riesgo Moderado</label>
+                                                <input type="number" id="mediumRiskThreshold" min="1" max="10" value="5">
+                                                <small>Puntaje mínimo para considerar riesgo moderado</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Security Tab -->
+                            <div id="security-tab" class="tab-pane">
+                                <div class="settings-form">
+                                    <div class="form-section">
+                                        <h3>Configuración de Seguridad</h3>
+                                        <div class="security-settings">
+                                            <div class="security-item">
+                                                <label>Requisito de Contraseña</label>
+                                                <select id="passwordPolicy">
+                                                    <option value="basic">Básico (6 caracteres)</option>
+                                                    <option value="medium" selected>Medio (8 caracteres, mayúsculas y números)</option>
+                                                    <option value="strong">Fuerte (10 caracteres, complejidad)</option>
+                                                </select>
+                                            </div>
+                                            <div class="security-item">
+                                                <label>Duración de Sesión</label>
+                                                <select id="sessionDuration">
+                                                    <option value="4">4 horas</option>
+                                                    <option value="8">8 horas</option>
+                                                    <option value="24" selected>24 horas</option>
+                                                    <option value="168">1 semana</option>
+                                                </select>
+                                            </div>
+                                            <div class="security-item">
+                                                <label>
+                                                    <input type="checkbox" id="require2FA">
+                                                    Requerir autenticación de dos factores
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h3>Registro de Actividad</h3>
+                                        <div class="activity-log-settings">
+                                            <div class="log-item">
+                                                <label>Retención de Logs</label>
+                                                <select id="logRetention">
+                                                    <option value="30">30 días</option>
+                                                    <option value="90" selected>90 días</option>
+                                                    <option value="365">1 año</option>
+                                                    <option value="730">2 años</option>
+                                                </select>
+                                            </div>
+                                            <div class="log-item">
+                                                <label>
+                                                    <input type="checkbox" id="auditLog" checked>
+                                                    Habilitar registro de auditoría
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <div id="addProgramModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar Nuevo Programa</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="addProgramForm">
+                <div class="form-group">
+                    <label>Nombre del Programa *</label>
+                    <input type="text" id="programName" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Programa *</label>
+                    <select id="programType" required>
+                        <option value="pregrado">Pregrado</option>
+                        <option value="posgrado">Posgrado</option>
+                        <option value="diplomado">Diplomado</option>
+                        <option value="curso">Curso</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Duración</label>
+                    <input type="text" id="programDuration" placeholder="Ej: 4 años, 6 semestres">
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="programDescription" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Crear Programa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addFacultyModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar Nueva Facultad</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="addFacultyForm">
+                <div class="form-group">
+                    <label>Nombre de la Facultad *</label>
+                    <input type="text" id="facultyName" required>
+                </div>
+                <div class="form-group">
+                    <label>Decano</label>
+                    <input type="text" id="facultyDean">
+                </div>
+                <div class="form-group">
+                    <label>Email de Contacto</label>
+                    <input type="email" id="facultyEmail">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Crear Facultad</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addCareerModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar Nueva Carrera</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="addCareerForm">
+                <div class="form-group">
+                    <label>Nombre de la Carrera *</label>
+                    <input type="text" id="careerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Código</label>
+                    <input type="text" id="careerCode">
+                </div>
+                <div class="form-group">
+                    <label>Programa *</label>
+                    <select id="careerProgram" required>
+                        <option value="">Seleccionar programa...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Facultad *</label>
+                    <select id="careerFaculty" required>
+                        <option value="">Seleccionar facultad...</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Crear Carrera</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addExpertModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar Nuevo Experto</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="addExpertForm">
+                <div class="form-group">
+                    <label>Nombre Completo *</label>
+                    <input type="text" id="expertFullName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="expertEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña *</label>
+                    <input type="password" id="expertPassword" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Especialización *</label>
+                    <input type="text" id="expertSpecialization" required>
+                </div>
+                <div class="form-group">
+                    <label>Número de Licencia</label>
+                    <input type="text" id="expertLicense">
+                </div>
+                <div class="form-group">
+                    <label>Años de Experiencia</label>
+                    <input type="number" id="expertExperience" min="0" max="50">
+                </div>
+                <div class="form-group">
+                    <label>Biografía</label>
+                    <textarea id="expertBio" rows="3" placeholder="Breve descripción profesional..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Áreas de Asignación</label>
+                    <div class="assignment-areas">
+                        <div class="area-selection">
+                            <label>Programas:</label>
+                            <div id="programAssignments" class="checkbox-group">
+                                <!-- Programas para asignar -->
+                            </div>
+                        </div>
+                        <div class="area-selection">
+                            <label>Facultades:</label>
+                            <div id="facultyAssignments" class="checkbox-group">
+                                <!-- Facultades para asignar -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Crear Experto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/institutional-admin.js"></script>
+</body>
+</html>

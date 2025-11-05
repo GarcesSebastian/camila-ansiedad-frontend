@@ -1,0 +1,17 @@
+{
+  "name": "camila-frontend",
+  "version": "1.0.0",
+  "description": "Frontend para Camila - Detección de Ansiedad",
+  "main": "public/index.html",
+  "scripts": {
+    "dev": "live-server public --port=3000 --host=localhost",
+    "build": "echo 'No build process needed for static files'",
+    "start": "live-server public --port=3000 --host=localhost"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "keywords": ["ansiedad", "frontend", "salud-mental"],
+  "author": "Tu Nombre",
+  "license": "MIT"
+}

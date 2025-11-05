@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camila - Detección de Ansiedad</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Auth Modal -->
+        <div id="authModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="modal-close" id="closeAuthModal" type="button">×</button>
+                    <h2>Bienvenido a Camila</h2>
+                    <p>Tu asistente para la detección de ansiedad</p>
+                </div>
+                
+                <div class="auth-forms">
+                    <!-- Login Form -->
+                    <form id="loginForm" class="auth-form active">
+                        <h3>Iniciar Sesión</h3>
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Contraseña</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        
+                        <!-- ✅ CHECKBOX TÉRMINOS EN LOGIN -->
+                        <div class="form-group terms-group">
+                            <div class="checkbox-container">
+                                <input 
+                                    type="checkbox" 
+                                    id="loginAcceptTerms" 
+                                    name="acceptedTerms"
+                                    required
+                                >
+                                <label for="loginAcceptTerms">
+                                    Acepto los 
+                                    <a href="#" class="terms-link" id="showTermsLinkLogin">
+                                        Términos y Condiciones
+                                    </a>
+                                </label>
+                            </div>
+                            <div class="error-message" id="loginTermsError"></div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                        <p class="auth-switch">¿No tienes cuenta? <a href="#" id="showRegister">Regístrate aquí</a></p>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="registerForm" class="auth-form">
+                        <h3>Crear Cuenta</h3>
+                        <div class="form-group">
+                            <label for="registerName">Nombre</label>
+                            <input type="text" id="registerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerAge">Edad (opcional)</label>
+                            <input type="number" id="registerAge" min="13" max="120">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Contraseña</label>
+                            <input type="password" id="registerPassword" required minlength="6">
+                        </div>
+                        
+                        <!-- ✅ CHECKBOX TÉRMINOS EN REGISTRO -->
+                        <div class="form-group terms-group">
+                            <div class="checkbox-container">
+                                <input 
+                                    type="checkbox" 
+                                    id="acceptTerms" 
+                                    name="acceptedTerms"
+                                    required
+                                >
+                                <label for="acceptTerms">
+                                    Acepto los 
+                                    <a href="#" class="terms-link" id="showTermsLink">
+                                        Términos y Condiciones
+                                    </a>
+                                </label>
+                            </div>
+                            <div class="error-message" id="termsError"></div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Crear Cuenta</button>
+                        <p class="auth-switch">¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión aquí</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ NUEVO: Modal para Términos y Condiciones -->
+        <div id="termsModal" class="modal hidden">
+            <div class="modal-content terms-modal-content">
+                <div class="modal-header">
+                    <button class="modal-close" id="closeTermsModal" type="button">×</button>
+                    <h2>Términos y Condiciones</h2>
+                    <p>Última actualización: Octubre 2025</p>
+                </div>
+                <div class="terms-content" id="termsContent">
+                    <!-- El contenido se cargará dinámicamente -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-primary" id="acceptTermsModal">Aceptar Términos</button>
+                    <button class="btn-secondary" id="closeTermsBtn">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="mainApp">
+            <!-- Botón hamburguesa para móvil -->
+            <button class="hamburger-btn" id="hamburgerBtn">
+                <div class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+
+            <!-- Overlay para cerrar sidebar en móvil -->
+            <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">?</div>
+                        <div class="user-details">
+                            <span id="userName">Invitado</span>
+                            <button id="logoutBtn" class="logout-btn" style="display: none;">Cerrar Sesión</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="new-chat-btn" id="newChatBtn">
+                    <span class="btn-icon">+</span>
+                    Nueva conversación
+                </button>
+                
+                <div class="chat-history" id="chatHistory">
+                    <!-- Historial de chats se cargará aquí -->
+                </div>
+                
+                <div class="sidebar-footer">
+                    <p class="disclaimer">Herramienta informativa - No reemplaza diagnóstico profesional</p>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="chat-container" id="chatContainer">
+                    <!-- Pantalla de bienvenida -->
+                    <div class="welcome-screen" id="welcomeScreen">
+                        <div class="welcome-header">
+                            <div class="avatar-large">
+                                <span>C</span>
+                            </div>
+                            <h1 class="welcome-title">Hola, soy Camila</h1>
+                            <p class="welcome-subtitle">Tu asistente para la detección temprana de ansiedad</p>
+                        </div>
+                        
+                        <div class="welcome-features">
+                            <div class="feature-grid">
+                                <div class="feature-card">
+                                    <div class="feature-icon">💬</div>
+                                    <h4>Chat Instantáneo</h4>
+                                    <p>Comienza a chatear inmediatamente sin registro</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">🔒</div>
+                                    <h4>Privacidad</h4>
+                                    <p>Tus conversaciones son confidenciales y seguras</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">🎯</div>
+                                    <h4>Análisis Precise</h4>
+                                    <p>Evaluación profesional de síntomas de ansiedad</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="examples-section">
+                            <h3>¿Cómo te sientes hoy?</h3>
+                            <div class="examples-grid">
+                                <div class="example-card" data-example="Últimamente me siento muy nervioso y tengo problemas para dormir">
+                                    <div class="example-icon">😰</div>
+                                    <p>"Últimamente me siento muy nervioso y tengo problemas para dormir"</p>
+                                </div>
+                                <div class="example-card" data-example="Siento que mi corazón late muy rápido y me cuesta respirar a veces">
+                                    <div class="example-icon">💓</div>
+                                    <p>"Siento que mi corazón late muy rápido y me cuesta respirar a veces"</p>
+                                </div>
+                                <div class="example-card" data-example="Tengo miedo constante de que algo malo va a pasar">
+                                    <div class="example-icon">😨</div>
+                                    <p>"Tengo miedo constante de que algo malo va a pasar"</p>
+                                </div>
+                                <div class="example-card" data-example="Me cuesta concentrarme y estoy siempre irritable">
+                                    <div class="example-icon">😤</div>
+                                    <p>"Me cuesta concentrarme y estoy siempre irritable"</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="safety-notice">
+                            <div class="notice-icon">⚠️</div>
+                            <p><strong>Importante:</strong> Esta herramienta no proporciona un diagnóstico médico. Si experimentas síntomas severos o persistentes, consulta a un profesional de la salud mental.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Mensajes del chat aparecerán aquí -->
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            class="message-input" 
+                            id="messageInput" 
+                            placeholder="Describe cómo te sientes..." 
+                            rows="1"
+                        ></textarea>
+                        <button class="send-button" id="sendButton">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+// Función para desarrolladores - resetear chats de prueba
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    // console.log('🔧 Modo desarrollo activado - Usa resetTestChats() para reiniciar contadores');
+    window.resetTestChats = function() {
+        localStorage.setItem('camila_anonymous_count', '0');
+        location.reload();
+    };
+}
+</script>
+</body>
+</html>

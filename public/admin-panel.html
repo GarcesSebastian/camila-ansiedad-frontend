@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Super Admin - Camila</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/admin.css">
+    <!-- Agregar Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+    <!-- Botón hamburguesa para móvil -->
+    <button class="hamburger-btn" id="adminHamburgerBtn">
+        <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </button>
+
+    <!-- Overlay para cerrar sidebar en móvil -->
+    <div class="sidebar-overlay" id="adminSidebarOverlay"></div>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>🧠 Camila Admin</h2>
+                <p>Super Administrador</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                    📊 Dashboard
+                </a>
+                <a href="#institutions" class="nav-item" data-section="institutions">
+                    🏛️ Instituciones
+                </a>
+                <a href="#experts" class="nav-item" data-section="experts">
+                    👨‍⚕️ Expertos
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="btn-logout">🚪 Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="section active">
+                <div class="section-header">
+                    <h1>Dashboard Super Admin</h1>
+                    <p>Resumen general del sistema</p>
+                    <button id="refreshStatsBtn" class="btn-primary">
+                        🔄 Actualizar
+                    </button>
+                </div>
+                
+                <!-- Estadísticas Principales -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3 id="total-users">0</h3>
+                            <p>Total Usuarios</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👨‍⚕️</div>
+                        <div class="stat-info">
+                            <h3 id="total-experts">0</h3>
+                            <p>Total Expertos</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏛️</div>
+                        <div class="stat-info">
+                            <h3 id="total-institutions">0</h3>
+                            <p>Total Instituciones</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficas -->
+                <div class="charts-container">
+                    <!-- Gráfica 1: Expertos por Institución -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>📊 Expertos por Institución</h3>
+                            <p>Distribución de expertos en cada institución</p>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="expertsByInstitutionChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Gráfica 2: Instituciones por Tipo -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>🏢 Instituciones por Tipo</h3>
+                            <p>Distribución de instituciones por categoría</p>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="institutionsByTypeChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad Reciente -->
+                <div class="recent-activity">
+                    <h3>Actividad Reciente</h3>
+                    <div id="activityList" class="activity-list">
+                        <!-- La actividad se cargará aquí -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Institutions Section -->
+            <section id="institutions-section" class="section">
+                <div class="section-header">
+                    <h1>Gestión de Instituciones</h1>
+                    <button id="createInstitutionBtn" class="btn-primary">+ Nueva Institución</button>
+                </div>
+
+                <!-- Filtros para Instituciones -->
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <div class="filter-item search-box">
+                            <label for="institutionSearch">Buscar</label>
+                            <input type="text" id="institutionSearch" placeholder="Buscar por nombre, email o código...">
+                        </div>
+                        <div class="filter-item">
+                            <label for="institutionTypeFilter">Tipo de Institución</label>
+                            <select id="institutionTypeFilter">
+                                <option value="">Todos los tipos</option>
+                                <option value="university">Universidad</option>
+                                <option value="school">Colegio</option>
+                                <option value="company">Empresa</option>
+                                <option value="health_center">Centro de Salud</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="institutionsList">
+                    <!-- Las instituciones se cargarán aquí -->
+                </div>
+            </section>
+
+            <!-- Experts Section -->
+            <section id="experts-section" class="section">
+                <div class="section-header">
+                    <h1>Gestión de Expertos</h1>
+                    <button id="createExpertBtn" class="btn-primary">+ Nuevo Experto</button>
+                </div>
+
+                <!-- Filtros para Expertos -->
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <div class="filter-item search-box">
+                            <label for="expertSearch">Buscar</label>
+                            <input type="text" id="expertSearch" placeholder="Buscar por nombre, email o institución...">
+                        </div>
+                        <div class="filter-item">
+                            <label for="expertInstitutionFilter">Institución</label>
+                            <select id="expertInstitutionFilter">
+                                <option value="">Todas las instituciones</option>
+                                <!-- Se llenará dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="expertSpecializationFilter">Especialización</label>
+                            <select id="expertSpecializationFilter">
+                                <option value="">Todas las especializaciones</option>
+                                <!-- Se llenará dinámicamente -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="expertsList">
+                    <!-- Los expertos se cargarán aquí como tabla -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modales para Crear -->
+    <div id="createInstitutionModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear Nueva Institución</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="createInstitutionForm">
+                <div class="form-group">
+                    <label>Nombre de la Institución *</label>
+                    <input type="text" id="institutionName" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Institución *</label>
+                    <select id="institutionType" required>
+                        <option value="university">Universidad</option>
+                        <option value="school">Colegio</option>
+                        <option value="company">Empresa</option>
+                        <option value="health_center">Centro de Salud</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Email de Contacto *</label>
+                    <input type="email" id="institutionEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="institutionPhone">
+                </div>
+                <div class="form-group">
+                    <label>Código de Institución *</label>
+                    <input type="text" id="institutionCode" required>
+                    <small>Este código se usará para que los usuarios se registren en la institución</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Crear Institución</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="createExpertModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear Nuevo Experto</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="createExpertForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre Completo *</label>
+                        <input type="text" id="expertName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="expertEmail" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contraseña *</label>
+                        <input type="password" id="expertPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Institución *</label>
+                        <select id="expertInstitution" required>
+                            <option value="">Seleccionar institución...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Especialización *</label>
+                        <input type="text" id="expertSpecialization" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Licencia</label>
+                        <input type="text" id="expertLicense">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Años de Experiencia</label>
+                        <input type="number" id="expertExperience" min="0" max="50">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Biografía</label>
+                    <textarea id="expertBio" rows="2" placeholder="Breve descripción del experto..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Crear Experto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modales para Editar -->
+    <div id="editInstitutionModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Editar Institución</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="editInstitutionForm">
+                <input type="hidden" id="editInstitutionId">
+                
+                <div class="form-group">
+                    <label>Nombre de la Institución *</label>
+                    <input type="text" id="editInstitutionName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tipo de Institución *</label>
+                    <select id="editInstitutionType" required>
+                        <option value="university">Universidad</option>
+                        <option value="school">Colegio</option>
+                        <option value="company">Empresa</option>
+                        <option value="health_center">Centro de Salud</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email de Contacto *</label>
+                    <input type="email" id="editInstitutionEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="editInstitutionPhone">
+                </div>
+                
+                <div class="form-group">
+                    <label>Código de Institución *</label>
+                    <input type="text" id="editInstitutionCode" required>
+                    <small>Este código se usará para que los usuarios se registren en la institución</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="editInstitutionStatus">
+                        <option value="true">Activa</option>
+                        <option value="false">Inactiva</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editExpertModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Editar Experto</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="editExpertForm">
+                <input type="hidden" id="editExpertId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre Completo *</label>
+                        <input type="text" id="editExpertName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="editExpertEmail" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Institución *</label>
+                        <select id="editExpertInstitution" required>
+                            <option value="">Cargando instituciones...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select id="editExpertStatus">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Especialización *</label>
+                        <input type="text" id="editExpertSpecialization" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Licencia</label>
+                        <input type="text" id="editExpertLicense">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Años de Experiencia</label>
+                        <input type="number" id="editExpertExperience" min="0" max="50">
+                    </div>
+                    <div class="form-group">
+                        <label>Límite de Pacientes</label>
+                        <input type="number" id="editExpertMaxPatients" min="1" max="200" value="50">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Biografía</label>
+                    <textarea id="editExpertBio" rows="3" placeholder="Breve descripción del experto..."></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/admin-panel.js"></script>
+</body>
+</html>
